@@ -19,7 +19,6 @@ function ProxyString(proxy) {
 }
 
 module.exports = function (config) {
-    console.log(config);
     var str = ProxyString(config.proxy);
     if (!str) {
         console.error('没有配置代理网址：config.proxy');

@@ -8,9 +8,10 @@ module.exports = {
     // 配置代理文件，正则表达式或者字符串构成的数组，匹配正则表达式或者数组就会被代理到此服务
     proxy: [
         /www\.test\.com\//
-    ]
+    ],
+    proxy_file_name: 'proxy.pac'
     /*todo: 将网络请求的数据保存到本地
-     autoSaveData: {
+     autoSave: {
      '/v1/': '/v1/'
      },
      404: ''*/
