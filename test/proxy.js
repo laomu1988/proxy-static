@@ -7,5 +7,8 @@ proxy({
     statics: {
         '/': __dirname + '/public/',
         '/test': __dirname + '/public/'
+    },
+    autoSave: {
+        '/css/': './saveto/'
     }
 });

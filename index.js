@@ -22,30 +22,31 @@ module.exports = function (_config) {
         next();
     });
 
-    // 自动保存文件
-    if (typeof autoSave === 'function' && config.autoSave) {
-        app.use(autoSave(config));
-    }
 
     // 代理文件地址
     app.use('/' + proxy_file, proxy(config));
 
     // 转发本地文件
     function localPath(res, path) {
-        console.info('本地文件:', path, space);
+        console.info('使用本地文件:', path, space);
     }
-
     for (var path in config.statics) {
         app.use(path, express.static(config.statics[path], {setHeaders: localPath}));
     }
+    // 忽略favicon文件
     app.get('/favicon.ico', function (req, res) {
         console.log('忽略该文件！                    ');
         res.end();
     });
 
+    // 自动保存文件
+    if (typeof autoSave === 'function' && config.autoSave) {
+        app.use(autoSave(config));
+    }
+
     // 未找到的文件自动转发原地址
     app.use(function (req, res, next) {
-        // console.log('this request need proxy；');
+        console.log('使用网络地址！', space);
         try {
             switch (req.method) {
                 case 'GET':
@@ -71,6 +72,6 @@ module.exports = function (_config) {
         var addr = 'http://' + ip.address() + ':' + config.port + '/' + proxy_file;
         console.info('代理文件地址: ' + addr, space);
         setproxy(addr);
-        console.info('被代理的网址：', config.proxy.join('\n'), space);
+        console.info('被代理的网址：\n', config.proxy.join('       \n'), space);
     });
 };

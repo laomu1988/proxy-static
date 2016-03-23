@@ -1,10 +1,10 @@
 {
   "name": "proxy-static",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "mac配置pac代理并记录请求数据",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo node test/proxy.js"
   },
   "dependencies": {
     "dateformat": "^1.0.12",

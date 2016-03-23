@@ -21,6 +21,9 @@ proxy({
     statics: {
         '/': __dirname + '/public/',
         '/test': __dirname + '/public/'
+    },
+    autoSave: {
+        '/test/': __dirname + '/'
     }
 });
 ```
@@ -34,6 +37,7 @@ proxy({
 | port  | int  | 本地端口，默认3000 |
 | proxy | array | 代理地址，由字符串或者正则表达式组成的数组 |
 | statics | object | 本地文件地址，假如未配置，则所有地址都将自动发送到原地址 |
+| autoSave | object | 自动保存网络数据到本地 |
 
 # 测试用例见test目录
 
