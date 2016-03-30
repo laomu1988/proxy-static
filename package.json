@@ -1,6 +1,6 @@
 {
   "name": "proxy-static",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "mac配置pac代理并记录请求数据",
   "main": "index.js",
   "scripts": {

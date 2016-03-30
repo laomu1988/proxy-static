@@ -6,7 +6,7 @@ function requestAndSave(req, saveTo) {
         var param = params[i];
         headers[param] = req.header(param);
     }
-    console.log(headers);
+    // console.log(headers);
     try {
         request({
             uri: req.url,

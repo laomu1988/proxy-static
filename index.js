@@ -30,6 +30,7 @@ module.exports = function (_config) {
     function localPath(res, path) {
         console.info('使用本地文件:', path, space);
     }
+
     for (var path in config.statics) {
         app.use(path, express.static(config.statics[path], {setHeaders: localPath}));
     }
@@ -72,6 +73,6 @@ module.exports = function (_config) {
         var addr = 'http://' + ip.address() + ':' + config.port + '/' + proxy_file;
         console.info('代理文件地址: ' + addr, space);
         setproxy(addr);
-        console.info('被代理的网址：\n', config.proxy.join('       \n'), space);
+        console.info('被代理的网址：            \n', config.proxy.join ? config.proxy.join('       \n') : config.proxy, space);
     });
 };
