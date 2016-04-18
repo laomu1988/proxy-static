@@ -1,4 +1,3 @@
-var default_config = require('./config.js');
 var _ = require('lodash');
 var express = require('express');
 var colors = require('colors');
@@ -11,11 +10,25 @@ var setproxy = require('./middleware/setproxy.js');
 var autoSave = require('./handle/autosave.js');
 var load = require('./middleware/load.js');
 
+
 module.exports = function (_config) {
-    var config = _.assign(default_config, _config);
-    var proxy_file = config.proxy_file_name || 'proxy-static.pac';
-    var space = '                     ';
+    var config = _.assign({
+        port: 3000,
+        proxy_file: 'proxy.pac'
+    }, _config);
+
+    var space = '                ';
     // app.enable('trust proxy');
+
+    if (config.middleware) {
+        if (typeof config.middleware === 'function') {
+            app.use(config.middleware);
+        } else if (config.middleware instanceof Array) {
+            for (var i = 0; i < config.middleware.length; i++) {
+                app.use(config.middleware[i]);
+            }
+        }
+    }
 
     // 输出日志
     app.use(function (req, res, next) {
@@ -23,13 +36,14 @@ module.exports = function (_config) {
         next();
     });
 
-
     // 代理文件地址
-    app.use('/' + proxy_file, proxy(config));
+    if (config.proxy) {
+        app.use('/' + proxy_file, proxy(config));
+    }
 
     // 转发本地文件
-    function localPath(res, path) {
-        console.info('使用本地文件:', path, space);
+    function localPath(res, path, stats) {
+        console.info(colors.green('使用本地文件:', path, space));
     }
 
     if (config.static) {
@@ -72,4 +86,6 @@ module.exports = function (_config) {
             console.info('被代理的网址：            \n', config.proxy.join ? config.proxy.join('       \n') : config.proxy, space);
         }
     });
+
+    return app;
 };

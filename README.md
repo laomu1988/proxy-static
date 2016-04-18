@@ -14,16 +14,31 @@
 ```
 var proxy = require('proxy-static');
 proxy({
-    port: 3002,
-    proxy: [
-        'www.test.com', /www\.test\.com\//
-    ],
+    // 本地服务器端口
+    port: 3000,
+    // 改路径时使用本地文件，url => local
     statics: {
-        '/': __dirname + '/public/',
-        '/test': __dirname + '/public/'
+        '/': __dirname + '/'
     },
+    // 配置代理文件，正则表达式或者字符串构成的数组，匹配正则表达式或者数组就会被代理到此服务,可以不用设置
+    proxy: [/www\.test\.com\//],
+    // 代理文件地址
+    proxy_file_name: 'proxy.pac',
+
+    // 设置header
+    headers: {
+        Host: '', // 修改host
+        Origin: '',
+        Cookie: '',// 发送到服务器时需要添加的cookie
+    },
+    // 修改header
+    setHeader: function (headers) {
+        return headers;
+    },
+
+    //将网络请求的数据保存到本地
     autoSave: {
-        '/test/': __dirname + '/'
+        '/v1/': '/v1/'
     }
 });
 ```
@@ -44,6 +59,7 @@ proxy({
 
 
 # 更新日志
+* 0.0.5 增加express middleware，可以自由处理请求
 * 0.0.4 修改header，可以将本地请求转发到服务器；部分位置增加输出颜色
 * 0.0.3 代理地址可以直接输入字符串，不必一定输入数组
 * 0.0.2 自动保存文件到本地；修改输出内容；

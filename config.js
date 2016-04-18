@@ -11,18 +11,22 @@ module.exports = {
     proxy_file_name: 'proxy.pac',
 
     // 设置header
-    //headers: {
-    //    Host: '', // 修改host
-    //    Origin: '',
-    //    Cookie: '',// 发送到服务器时需要添加的cookie
-    //},
-    //// 修改header
-    //setHeader: function (headers) {
-    //    return headers;
-    //},
+    headers: {
+        Host: '', // 修改host
+        Origin: '',
+        Cookie: '',// 发送到服务器时需要添加的cookie
+    },
+    // 修改req header
+    setReqHeader: function (headers) {
+        return headers;
+    },
+    // express 中间件,函数或者函数数组
+    middleware: function (req, res, next) {
+        next();
+    },
 
     //将网络请求的数据保存到本地
     autoSave: {
-        // '/v1/': '/v1/'
+        '/v1/': '/v1/'
     }
 };

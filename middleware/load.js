@@ -27,8 +27,8 @@ module.exports = function (config, callback) {
         if (config.headers && typeof config.headers == 'object') {
             headers = _.extend(headers, config.headers);
         }
-        if (typeof config.setHeader === 'function') {
-            headers = config.setHeader(headers);
+        if (typeof config.setReqHeader === 'function') {
+            headers = config.setReqHeader(headers, req.url, req);
         }
 
         // console.log(headers);
