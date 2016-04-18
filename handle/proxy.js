@@ -21,7 +21,7 @@ function ProxyString(proxy) {
 module.exports = function (config) {
     var str = ProxyString(config.proxy);
     if (!str) {
-        console.error('没有配置代理网址：config.proxy');
+        return console.error('没有配置代理网址：config.proxy');
     }
     var proxy_source = fs.readFileSync(__dirname + '/proxy.pac', 'utf8');
     var proxy_str = '[PROXY-CONFIG]\n\nconfig = {"PROXY localhost:' + config.port + ';DIRECT":[' + str + ']};';

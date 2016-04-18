@@ -1,12 +1,13 @@
 {
   "name": "proxy-static",
-  "version": "0.0.3",
-  "description": "mac配置pac代理并记录请求数据",
+  "version": "0.0.4",
+  "description": "转发文件：远程服务器转发到本地，本地转发到远程服务器",
   "main": "index.js",
   "scripts": {
     "test": "echo node test/proxy.js"
   },
   "dependencies": {
+    "colors": "^1.1.2",
     "dateformat": "^1.0.12",
     "express": "^4.13.4",
     "ip": "^1.1.2",

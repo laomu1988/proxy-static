@@ -5,14 +5,24 @@ module.exports = {
     statics: {
         '/': __dirname + '/'
     },
-    // 配置代理文件，正则表达式或者字符串构成的数组，匹配正则表达式或者数组就会被代理到此服务
-    proxy: [
-        /www\.test\.com\//
-    ],
-    proxy_file_name: 'proxy.pac'
-    /*todo: 将网络请求的数据保存到本地
-     autoSave: {
-     '/v1/': '/v1/'
-     },
-     404: ''*/
+    // 配置代理文件，正则表达式或者字符串构成的数组，匹配正则表达式或者数组就会被代理到此服务,可以不用设置
+    proxy: [/www\.test\.com\//],
+    // 代理文件地址
+    proxy_file_name: 'proxy.pac',
+
+    // 设置header
+    //headers: {
+    //    Host: '', // 修改host
+    //    Origin: '',
+    //    Cookie: '',// 发送到服务器时需要添加的cookie
+    //},
+    //// 修改header
+    //setHeader: function (headers) {
+    //    return headers;
+    //},
+
+    //将网络请求的数据保存到本地
+    autoSave: {
+        // '/v1/': '/v1/'
+    }
 };
