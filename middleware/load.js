@@ -28,10 +28,17 @@ module.exports = function (config, callback) {
             headers = _.extend(headers, config.headers);
         }
         if (typeof config.setReqHeader === 'function') {
-            headers = config.setReqHeader(headers, req.url, req);
+            config.setReqHeader(headers, req.url, req);
         }
 
         // console.log(headers);
+        // 避免request从本地位置加载
+        var host = headers.Host;
+        if (host.indexOf('localhost:' + config.port) >= 0 || host.indexOf('127.0.0.1:' + config.port) >= 0) {
+            next();
+            return;
+        }
+
         try {
             request({
                 url: 'http://' + headers.Host + req.url,

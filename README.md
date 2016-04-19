@@ -25,20 +25,30 @@ proxy({
     // 代理文件地址
     proxy_file_name: 'proxy.pac',
 
-    // 设置header
+    // 将网络请求的数据保存到本地
+    autoSave: {
+        // 网络路径 => 本地路径,注意，不能自动创建文件夹，所以对应路径不存在时需要手动创建文件夹后才能保存文件
+        '/v1/': '/v1/'
+    }
+
+    // 设置header,可以将请求转发到其他服务器
     headers: {
         Host: '', // 修改host
         Origin: '',
         Cookie: '',// 发送到服务器时需要添加的cookie
     },
-    // 修改header
-    setHeader: function (headers) {
-        return headers;
+    // 修改请求的header，可以将请求转发到其他服务器
+    setReqHeader: function (headers, url, req) {
+        if(url.indexOf('app')){
+            headers.Host = 'www.test.com';
+        }
     },
 
-    //将网络请求的数据保存到本地
-    autoSave: {
-        '/v1/': '/v1/'
+    // middleware express请求中间件，可以是数组或者函数，将在程序开始时调用该中间件。
+    // 假如中间件中res未发送内容，请一定添加next(),不然后续代码将无法执行
+    middleware: function(req,res,next){
+        // req.app.use('test', __dirname + '/test');
+        next();
     }
 });
 ```
@@ -46,19 +56,11 @@ proxy({
 * 打开代理网址即可查看效果
 
 
-# 配置项说明[参见config.js]
-
-| 配置项 | 类型 | 说明 |
-|-------|------|-----|
-| port  | int  | 本地端口，默认3000 |
-| proxy | array | 要被代理的网址，字符串或者正则表达式组成，也可以是数组 |
-| statics | object | 本地文件地址，假如未配置，则所有地址都将自动发送到原地址 |
-| autoSave | object | 自动保存网络数据到本地 |
-
 # 测试用例见test目录
 
 
 # 更新日志
+* 0.1.0 修改说明文档；修复重复加载本地内容问题
 * 0.0.5 增加express middleware，可以自由处理请求
 * 0.0.4 修改header，可以将本地请求转发到服务器；部分位置增加输出颜色
 * 0.0.3 代理地址可以直接输入字符串，不必一定输入数组

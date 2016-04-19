@@ -47,11 +47,13 @@ module.exports = function (_config) {
     }
 
     if (config.static) {
+        console.log('static: ', config.static);
         app.use(express.static(config.static, {setHeaders: localPath}));
     }
 
     if (config.statics) {
         for (var path in config.statics) {
+            console.log('static: ', path, config.statics[path]);
             app.use(path, express.static(config.statics[path], {setHeaders: localPath}));
         }
     }
@@ -73,8 +75,9 @@ module.exports = function (_config) {
     }));
 
     app.use(function (req, res, next) {
-        console.log(colors.red('未找到文件：', req.url, space));
+        res.status(404).send('Not Found!');
         res.end();
+        console.log(colors.red('未找到文件：', req.url, space));
     });
 
     app.listen(config.port, function () {
