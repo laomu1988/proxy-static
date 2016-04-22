@@ -10,7 +10,7 @@ var setproxy = require('./middleware/setproxy.js');
 var autoSave = require('./handle/autosave.js');
 var load = require('./middleware/load.js');
 
-
+app.express = express;
 module.exports = function (_config) {
     var config = _.assign({
         port: 3000,
@@ -67,7 +67,6 @@ module.exports = function (_config) {
 
     // 未找到的文件自动转发原地址
     app.use(load(config, function (url, response, file) {
-        console.log('加载数据成功！');
         // 自动保存文件
         if (typeof autoSave === 'function' && config.autoSave) {
             autoSave(config, url, file);

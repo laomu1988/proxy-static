@@ -38,8 +38,9 @@ module.exports = function (config, callback) {
             next();
             return;
         }
-
+        var url = req.url.indexOf('http') == 0 ? req.url : 'http://' + headers.Host + req.url;
         try {
+
             request({
                 url: 'http://' + headers.Host + req.url,
                 gzip: false,
@@ -53,7 +54,8 @@ module.exports = function (config, callback) {
                         callback(req.url, response, body);
                     }
                 } else {
-                    console.log(colors.red('加载网络数据失败：', headers['Host'] + req.url, error, response && response.statusCode, '              '));
+                    console.log(colors.red('加载网络数据失败：', url, error, response && response.statusCode, '              '));
+                    next();
                 }
             });
         } catch (e) {
