@@ -12,23 +12,12 @@ var load = require('./middleware/load.js');
 
 app.express = express;
 module.exports = function (_config) {
-    var config = _.assign({
-        port: 3000,
-        proxy_file: 'proxy.pac'
-    }, _config);
+    var config = _config || {};
+    config.port = config.port || 3000;
+    config.proxy_file = 'proxy.pac';
 
     var space = '                ';
     // app.enable('trust proxy');
-
-    if (config.middleware) {
-        if (typeof config.middleware === 'function') {
-            app.use(config.middleware);
-        } else if (config.middleware instanceof Array) {
-            for (var i = 0; i < config.middleware.length; i++) {
-                app.use(config.middleware[i]);
-            }
-        }
-    }
 
     // 输出日志
     app.use(function (req, res, next) {
@@ -36,9 +25,34 @@ module.exports = function (_config) {
         next();
     });
 
+    // 中间件,假如中间件修改了，则下次调用请求时自动使用新的中间件
+    app.use(function (req, res, next) {
+            var arr = config.middleware;
+            if (typeof config.middleware === 'function') {
+                arr = [config.middleware];
+            } else if (!(arr instanceof Array)) {
+                return next();
+            }
+            function execMiddleWare(i) {
+                if (i > arr.length) {
+                    return next();
+                }
+                if (typeof arr[i] === 'function') {
+                    console.log(i, arr[i]);
+                    arr[i](req, res, ()=>execMiddleWare(i + 1));
+                } else {
+                    execMiddleWare(i + 1);
+                }
+            }
+
+            execMiddleWare(0);
+        }
+    );
+
+
     // 代理文件地址
     if (config.proxy) {
-        app.use('/' + proxy_file, proxy(config));
+        app.all('/' + proxy_file, proxy(config));
     }
 
     // 转发本地文件
