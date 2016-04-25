@@ -26,6 +26,15 @@ module.exports = function (config, callback) {
         }
         if (config.headers && typeof config.headers == 'object') {
             headers = _.extend(headers, config.headers);
+            if (config.headers.Host) {
+                /**修改header中的host时，顺便修改Referer和Origin*/
+                if (headers.Referer && !config.headers.Referer) {
+                    headers.Referer = headers.Referer.replace(/http:\/\/.*?\//g, 'http://' + headers.Host + '/');
+                }
+                if (headers.Origin && !config.headers.Origin) {
+                    headers.Origin = headers.Origin.replace(/http:\/\/.*?(\/|$)/g, 'http://' + headers.Host);
+                }
+            }
         }
         if (typeof config.setReqHeader === 'function') {
             config.setReqHeader(headers, req.url, req);

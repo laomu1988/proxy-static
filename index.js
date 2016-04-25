@@ -38,7 +38,7 @@ module.exports = function (_config) {
                     return next();
                 }
                 if (typeof arr[i] === 'function') {
-                    console.log(i, arr[i]);
+                    // console.log(i, arr[i]);
                     arr[i](req, res, ()=>execMiddleWare(i + 1));
                 } else {
                     execMiddleWare(i + 1);
