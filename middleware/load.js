@@ -26,16 +26,18 @@ module.exports = function (config, callback) {
         }
         if (config.headers && typeof config.headers == 'object') {
             headers = _.extend(headers, config.headers);
-            if (config.headers.Host) {
-                /**修改header中的host时，顺便修改Referer和Origin*/
-                if (headers.Referer && !config.headers.Referer) {
-                    headers.Referer = headers.Referer.replace(/http:\/\/.*?\//g, 'http://' + headers.Host + '/');
-                }
-                if (headers.Origin && !config.headers.Origin) {
-                    headers.Origin = headers.Origin.replace(/http:\/\/.*?(\/|$)/g, 'http://' + headers.Host);
-                }
+        }
+
+        if (headers.Host.indexOf('localhost') < 0) {
+            /**修改header中的host时，顺便修改Referer和Origin*/
+            if (headers.Referer && (!config.headers || !config.headers.Referer)) {
+                headers.Referer = headers.Referer.replace(/http:\/\/.*?\//g, 'http://' + headers.Host + '/');
+            }
+            if (headers.Origin && (!config.headers || !config.headers.Origin)) {
+                headers.Origin = headers.Origin.replace(/http:\/\/.*?(\/|$)/g, 'http://' + headers.Host);
             }
         }
+
         if (typeof config.setReqHeader === 'function') {
             config.setReqHeader(headers, req.url, req);
         }
@@ -51,9 +53,11 @@ module.exports = function (config, callback) {
         try {
 
             request({
+                method: req.method,
                 url: 'http://' + headers.Host + req.url,
                 gzip: false,
-                headers: headers
+                headers: headers,
+                form: req.body
             }, function (error, response, body) {
                 if (response && response.statusCode == 200) {
                     res.set(response.headers);
