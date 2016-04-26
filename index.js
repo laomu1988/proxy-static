@@ -9,6 +9,7 @@ var proxy = require('./handle/proxy.js');
 var setproxy = require('./middleware/setproxy.js');
 var autoSave = require('./handle/autosave.js');
 var load = require('./middleware/load.js');
+var bodyParser = require('body-parser');
 
 app.express = express;
 module.exports = function (_config) {
@@ -18,6 +19,9 @@ module.exports = function (_config) {
 
     var space = '                ';
     // app.enable('trust proxy');
+    app.use(bodyParser.json()); // for parsing application/json
+    app.use(bodyParser.urlencoded({extended: true})); // for parsing application/x-www-form-urlencoded
+
 
     // 输出日志
     app.use(function (req, res, next) {
@@ -90,7 +94,7 @@ module.exports = function (_config) {
     app.use(function (req, res, next) {
         res.status(404).send('Not Found!');
         res.end();
-        console.log(colors.red('未找到文件：', req.url, space));
+        console.log(colors.red('未找到文件：', req.path, space));
     });
 
     app.listen(config.port, function () {
