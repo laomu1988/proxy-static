@@ -1,9 +1,21 @@
 /**加载网路数据**/
 var request = require('request'),
     _ = require('lodash'),
-    colors = require('colors');
+    colors = require('colors'),
+    ip = require('ip');
 
 var resHeaders = [];
+
+function isLocal(host, config) {
+    if (host.indexOf('localhost') >= 0 || host.indexOf('127.0.0.1') >= 0 || host.indexOf(ip.address()) >= 0) {
+        if (config.port == 80) {
+            return host.match(/(\d+\.){3}\d+(:80)?$/);
+        } else {
+            return host.indexOf(':' + config.port) > 0;
+        }
+    }
+}
+
 
 module.exports = function (config, callback) {
     return function (req, res, next) {
@@ -44,8 +56,7 @@ module.exports = function (config, callback) {
 
         // console.log(headers);
         // 避免request从本地位置加载
-        var host = headers.Host;
-        if (host.indexOf('localhost:' + config.port) >= 0 || host.indexOf('127.0.0.1:' + config.port) >= 0) {
+        if (isLocal(headers.Host, config)) {
             next();
             return;
         }
@@ -62,7 +73,7 @@ module.exports = function (config, callback) {
                 if (response && response.statusCode == 200) {
                     res.set(response.headers);
                     res.send(body);
-                    console.log(colors.green('加载网络数据：', headers['Host'] + req.url, '              '));
+                    console.log(colors.blue('加载网络数据：', headers['Host'] + req.url, '              '));
                     if (typeof callback === 'function') {
                         callback(req.url, response, body);
                     }
