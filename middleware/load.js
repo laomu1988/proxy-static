@@ -73,17 +73,17 @@ module.exports = function (config, callback) {
                 if (response && response.statusCode == 200) {
                     res.set(response.headers);
                     res.send(body);
-                    console.log(colors.blue('加载网络数据：', headers['Host'] + req.url, '              '));
+                    req.log('magenta', ' LoadFromWeb: ', headers['Host'] + req.url, '              ');
                     if (typeof callback === 'function') {
                         callback(req.url, response, body);
                     }
                 } else {
-                    console.log(colors.red('加载网络数据失败：', url, error, response && response.statusCode, '              '));
+                    req.log('red', ' LoadFailure: ', url, error, response && response.statusCode, '              ');
                     next();
                 }
             });
         } catch (e) {
-            console.log(colors.red('加载地址出错：', headers['Host'] + req.url, e, '        '));
+            req.log('red', ' LoadFailure: ', headers['Host'] + req.url, e, '        ');
         }
     }
 };

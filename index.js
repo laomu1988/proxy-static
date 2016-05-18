@@ -11,6 +11,20 @@ var autoSave = require('./handle/autosave.js');
 var load = require('./middleware/load.js');
 var bodyParser = require('body-parser');
 
+// 简化输出日志
+app.log = function () {
+    var color = 'white', content;
+    if (arguments.length > 1 && colors[arguments[0]]) {
+        color = arguments[0];
+        content = Array.prototype.slice.call(arguments, 1);
+    } else {
+        color = 'white';
+        content = Array.prototype.slice.call(arguments);
+    }
+    content.unshift();
+    console.log(colors.green(dateformat('yyyy-mm-dd HH:MM:ss'), ':', this._path || ''), colors[color].apply(colors, content));
+};
+
 app.express = express;
 module.exports = function (_config) {
     var config = _config || {};
@@ -25,7 +39,11 @@ module.exports = function (_config) {
 
     // 输出日志
     app.use(function (req, res, next) {
-        console.info(dateformat('yyyy-mm-dd HH:MM:ss'), req.method, ':', req.url);
+        req._path = req.path;
+        req._method = req.method;
+        req._url = req.url;
+        req._start = new Date();
+        res.log = req.log = app.log.bind(req);
         next();
     });
 
@@ -61,7 +79,7 @@ module.exports = function (_config) {
 
     // 转发本地文件
     function localPath(res, path, stats) {
-        console.info(colors.green('使用本地文件:', path, space));
+        res.log('cyan', 'LocalFile:', path, space);
     }
 
     if (config.static) {
@@ -78,7 +96,7 @@ module.exports = function (_config) {
 
     // 忽略favicon文件
     app.get('/favicon.ico', function (req, res) {
-        console.log('忽略该文件！                    ');
+        req.log('Ignore');
         res.end();
     });
 
@@ -92,13 +110,13 @@ module.exports = function (_config) {
     }));
 
     app.use(function (req, res, next) {
-        res.status(404).send('Not Found!');
+        res.status(404).send('{"errno":404,"msg":"Not Found!"}');
         res.end();
-        console.log(colors.red('未找到文件：', req.path, space));
+        res.log('red', ' Not Found!', space);
     });
 
     app.listen(config.port, function () {
-        console.info('启动服务器: http://localhost:' + config.port + '/', space);
+        console.log(colors.green('****** 启动服务器: http://localhost:' + config.port + '/', space + '*************\n***************************************************************'));
         if (config.proxy) {
             var addr = 'http://' + ip.address() + ':' + config.port + '/' + proxy_file;
             console.info('代理文件地址: ' + addr, space);

@@ -1,6 +1,6 @@
 {
   "name": "proxy-static",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "转发文件：远程服务器转发到本地，本地转发到远程服务器",
   "main": "index.js",
   "scripts": {
