@@ -30,6 +30,7 @@ module.exports = function (config, callback) {
             'Host',
             'Cache-Control',
             'Pragma',
+            'Proxy-Connection',
             'Referer'];
         for (var i in params) {
             var param = params[i];
@@ -65,7 +66,7 @@ module.exports = function (config, callback) {
 
             request({
                 method: req.method,
-                url: 'http://' + headers.Host + req.url,
+                url: url,
                 gzip: false,
                 headers: headers,
                 form: req.body
@@ -73,17 +74,17 @@ module.exports = function (config, callback) {
                 if (response && response.statusCode == 200) {
                     res.set(response.headers);
                     res.send(body);
-                    req.log('magenta', ' LoadFromWeb: ', headers['Host'] + req.url, '              ');
+                    req.log('magenta', ' LoadFromWeb: ', url, '              ');
                     if (typeof callback === 'function') {
                         callback(req.url, response, body);
                     }
                 } else {
-                    req.log('red', ' LoadFailure: ', url, error, response && response.statusCode, '              ');
+                    req.log('red', ' LoadFailure: ', url, error, 'response:', response);
                     next();
                 }
             });
         } catch (e) {
-            req.log('red', ' LoadFailure: ', headers['Host'] + req.url, e, '        ');
+            req.log('red', ' LoadError: ', headers['Host'] + req.url, e, '        ');
         }
     }
 };
